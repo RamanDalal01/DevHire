@@ -1,82 +1,140 @@
-# DevHire — Developer Job Board Platform
+# DevHire — Tech Recruitment Platform
 
-**DevHire** is a premium, skill-first developer job board designed to streamline software developer recruitment. It solves tech hiring by matching companies with qualified tech talent through modern interactive dashboards, structured filters, and SEO-optimized public listing pages.
-
----
-
-## 🚀 Tech Stack
-
-- **Frontend**: Next.js 14+ (App Router), Tailwind CSS, Axios, Lucide React (for premium icons)
-- **Backend**: Node.js, Express.js, MongoDB + Mongoose, JWT (JSON Web Tokens), bcryptjs
-- **Services**: Cloudinary (Mock/Active Resume uploads), Nodemailer (Mock/Active email updates)
+**DevHire** is a skill-first recruitment board designed exclusively for software developers and tech employers. By offering dedicated, role-specific portals for recruiters and candidates, DevHire eliminates the friction of generic job platforms through real-time tag-based filtering, clean dark-mode visuals, and secure backend architecture.
 
 ---
 
-## 🛠️ Monorepo Structure
+### 1. Project Overview
+
+Finding and hiring technical talent on generic platforms is slow and inefficient. DevHire addresses this gap by creating an streamlined, developer-first job marketplace. 
+
+Built as a full-stack Node.js and Next.js application, the platform provides tailored interfaces:
+* **Developers** can create detailed profiles, showcase engineering skills, upload resumes, and track their application lifecycle.
+* **Recruiters** can post job vacancies, manage applicant pipelines in real-time, and update application statuses instantly.
+* **Impact**: Empowers companies to filter technical candidates early and allows developers to find role-matching vacancies with zero clutter.
+
+---
+
+### 2. Features
+
+* **Tailored Workspaces**: Independent interfaces for candidate tracking (developers) and job post management (recruiters).
+* **Smart Filter & Search**: Instant, real-time query mechanics based on skill tags, salary ranges, location, and employment type.
+* **Fallback Asset Storage**: Intelligent local disk fallback for document uploads when Cloudinary configurations are absent, preventing setup barriers.
+* **Fallback Notifications**: Clean server console logging fallback for transaction emails when SMTP relays are unconfigured.
+* **Security Hardening**: Protected with double-gated API rate limiters (preventing automated brute-force hits), input sanitization against query injection, and secure Helmet headers.
+* **Centralized Resilience**: Express-wide error middleware translating database anomalies into structured JSON responses, paired with client-side Next.js error boundaries.
+
+---
+
+### 3. Tech Stack
+
+* **Frontend**: Next.js 14 (App Router), Vanilla CSS (Custom Glassmorphism), Axios, Lucide Icons, React Hot Toast
+* **Backend**: Node.js, Express.js, MongoDB (Mongoose ODM)
+* **Monitoring & Security**: Winston Logger (Structured log rotation), Helmet, Express-Rate-Limit, Express-Mongo-Sanitize
+
+---
+
+### 4. Installation
+
+Get the application running locally in three quick steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/RamanDalal01/DevHire.git
+   cd DevHire
+   ```
+
+2. **Install Dependencies** (Installs packages for root, backend, and frontend concurrently):
+   ```bash
+   npm run install-all
+   ```
+
+3. **Launch Local Servers**:
+   ```bash
+   npm run dev
+   ```
+   * Next.js UI will run on `http://localhost:3000`
+   * Express API will run on `http://localhost:5000`
+
+---
+
+### 5. Environment Variables
+
+To run the backend, create a `.env` file in the `/backend` folder. Below is the `.env.example` template:
+
+```env
+# Server Port Configuration
+PORT=5000
+
+# Database Connection (MongoDB)
+MONGODB_URI=your_mongodb_uri
+
+# Secure Signature & Token Configurations
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRE=7d
+
+# Email Notification Delivery (SMTP - Optional)
+EMAIL_SERVICE=gmail
+EMAIL_USER=your_email
+EMAIL_PASS=your_email_password
+
+# Media Storage Credentials (Cloudinary - Optional)
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+```
+
+---
+
+### 6. API Endpoints (short)
+
+#### User Accounts & Profile
+* `POST /api/auth/register` — Create developer or recruiter account
+* `POST /api/auth/login` — Create secure session
+* `GET /api/auth/me` — Retrieve current user profile
+* `PUT /api/auth/profile` — Update user profile details
+* `POST /api/auth/upload` — Upload candidate resume file
+
+#### Job Listings
+* `GET /api/jobs` — Retrieve and filter vacancies
+* `POST /api/jobs` — Create new job post *(Recruiter only)*
+* `PUT /api/jobs/:id` — Edit vacancy details *(Owner only)*
+* `DELETE /api/jobs/:id` — Delete vacancy *(Owner only)*
+
+#### Applications
+* `POST /api/jobs/:id/apply` — Apply to a job vacancy *(Developer only)*
+* `GET /api/applications/me` — Track submitted applications *(Developer only)*
+* `GET /api/applications/company` — Review incoming resumes *(Recruiter only)*
+* `PUT /api/applications/:id/status` — Transition application stage *(Recruiter only)*
+
+---
+
+### 7. Folder Structure
 
 ```text
 DevHire/
 ├── backend/            # Express API Server
-│   ├── config/         # Database and third-party configs
-│   ├── controllers/    # Request controllers containing logic
-│   ├── middleware/     # JWT authentication and RBAC middlewares
-│   ├── models/         # Mongoose User, Job, & Application schemas
-│   ├── routes/         # Express Router routes
-│   └── server.js       # Backend Entry point
+│   ├── config/         # Logger, database connection, and mail settings
+│   ├── controllers/    # Request controllers and business logic
+│   ├── middleware/     # RBAC, security limiters, and error handlers
+│   ├── models/         # Mongoose Schemas (User, Job, Application)
+│   ├── routes/         # Express API route declarations
+│   └── server.js       # Express server entry point
 ├── frontend/           # Next.js App Router Client
 │   ├── src/
-│   │   ├── app/        # Pages, Layouts, and routing
-│   │   ├── components/ # Custom reusable UI components
-│   │   └── context/    # Global Auth State & Axios Context
-└── package.json        # Main script orchestrator
+│   │   ├── app/        # Pages, layouts, recovery boundaries, and 404s
+│   │   ├── components/ # Custom global elements (Navbar, Footer, Buttons)
+│   │   ├── context/    # React context and custom Axios configuration
+│   │   └── utils/      # Client-side endpoint consumers
+│   └── package.json    # Frontend configuration and scripts
+└── package.json        # Root workspace runner and execution setup
 ```
 
 ---
 
-## 📦 Getting Started
+### 8. Future Improvements
 
-### 1. Prerequisites
-- [Node.js](https://nodejs.org/) installed (v18+ recommended)
-- [MongoDB](https://www.mongodb.com/) running locally or a MongoDB Atlas URI
+1. **AI Resume Matching**: Auto-match developer profile resumes against recruiter job specifications to provide a compatibility percentage.
+2. **Interactive Code Playground**: Embedded tech screen sandbox within the recruitment flow for early skills evaluation.
+3. **Integrated Scheduling**: Live integrations with calendar services (e.g. Google Calendar or Jitsi) to schedule technical interviews directly.
 
-### 2. Installation
-To install dependencies for the root, backend, and frontend directories all in one go, run:
-```bash
-npm run install-all
-```
-
-### 3. Environment Variables
-Create a `.env` file in the `/backend` directory with the following variables:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/devhire
-JWT_SECRET=super_secret_jwt_key_devhire_2026
-JWT_EXPIRE=7d
-
-# Optional Cloudinary (for resumes) - will fall back to local disk if omitted
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-
-# Optional Nodemailer (for status updates) - will print to console if omitted
-EMAIL_SERVICE=gmail
-EMAIL_USER=
-EMAIL_PASS=
-```
-
-### 4. Running the Application
-To run both backend and frontend concurrently in development mode:
-```bash
-npm run dev
-```
-The **Next.js UI** will be available at `http://localhost:3000`.
-The **Express API Server** will be available at `http://localhost:5000`.
-
----
-
-## 🌟 Premium Features Implemented
-- **Premium Styling**: Sleek glassmorphic dark interface using curated harmonious HSL tones, smooth CSS transitions, glowing background gradients, and sleek typography.
-- **Interactive Search & Filter**: Real-time filtering by tech stacks, salary range, job type, and location.
-- **Role-Based Access (RBAC)**: Distinct, highly optimized workflows and dashboards for **Developers** (apply to jobs, track applications, upload resume, list skills) and **Companies** (post jobs, edit jobs, view applicants, manage status updates).
-- **SEO & SSR Enabled**: Public job listing page and job detail pages utilize SSR (Server Components) for optimized search crawlers, fast initial load, and structured meta tags.
-- **Fail-safe Integrations**: Built-in dynamic fallbacks for Cloudinary (local uploads) and Nodemailer (console logging) so the platform is immediately functional without setup friction.
