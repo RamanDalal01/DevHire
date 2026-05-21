@@ -76,7 +76,7 @@ JWT_EXPIRE=7d
 # Email Notification Delivery (SMTP - Optional)
 EMAIL_SERVICE=gmail
 EMAIL_USER=your_email
-EMAIL_PASS=your_email_password
+EMAIL_PASS=your_email_app_password
 
 # Media Storage Credentials (Cloudinary - Optional)
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
